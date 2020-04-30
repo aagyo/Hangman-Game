@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-D:\MVP Anul2\HangmanTheGame\Hangman\Hangman\obj\Debug\
+D:\MVP Git\Hangman\Hangman\obj\Debug\
 Hangman
 none
 false
 DEBUG;TRACE
-D:\MVP Anul2\HangmanTheGame\Hangman\Hangman\App.xaml
-2-287768163
+D:\MVP Git\Hangman\Hangman\App.xaml
+31621248042
 
-17732956711
+18-624401882
 13-1505183044
-Views\GameWindow.xaml;Views\MainWindow.xaml;
+Views\AboutWindow.xaml;Views\GameWindow.xaml;Views\MainWindow.xaml;
 
 False
 

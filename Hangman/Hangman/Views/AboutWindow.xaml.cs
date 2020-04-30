@@ -15,19 +15,13 @@ using System.Windows.Shapes;
 namespace Hangman.Views
 {
     /// <summary>
-    /// Interaction logic for GameWindow.xaml
+    /// Interaction logic for AboutWindow.xaml
     /// </summary>
-    public partial class GameWindow : Window
+    public partial class AboutWindow : Window
     {
-        public GameWindow()
+        public AboutWindow()
         {
             InitializeComponent();
-        }
-
-        private void AboutButton_Click(object sender, RoutedEventArgs e)
-        {
-            AboutWindow wind = new AboutWindow();
-            wind.Show();
         }
     }
 }
