@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<MainWindowViewModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <UsersList>
+    <User>
+      <contor>15</contor>
+      <Nickname>andreixx2xd</Nickname>
+      <ImageSource>../Avatars/15.jpg</ImageSource>
+    </User>
+    <User>
+      <contor>7</contor>
+      <Nickname>misulica123</Nickname>
+      <ImageSource>../Avatars/7.jpg</ImageSource>
+    </User>
+  </UsersList>
+  <CanExecuteCommand>false</CanExecuteCommand>
+  <IsUserSelected>false</IsUserSelected>
+  <IsEnterVisible>false</IsEnterVisible>
+</MainWindowViewModel>
