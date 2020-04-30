@@ -8,5 +8,6 @@ namespace Hangman.Models
 {
     class Game
     {
+
     }
 }
