@@ -22,8 +22,12 @@
                         <MenuItem Name ="ExitButton" Header="Exit" Click="ExitButton_Click"/>
                     </MenuItem>
                     <MenuItem Header="Categories" FontSize="14" Margin="5,0">
-                        <MenuItem Header="All categories" IsCheckable="True"/>
-                        <MenuItem Header="Cars" IsCheckable="True"/>
+                        <MenuItem Header="All categories" IsCheckable="True" 
+                                  IsChecked="{Binding IsAllChecked}"
+                                  Command="{Binding CheckCategoryCommand}"/>
+                        <MenuItem Header="Cars" IsCheckable="True"
+                                  IsChecked="{Binding IsCarsChecked}"
+                                  Command="{Binding CheckCarsCommand}"/>
                     </MenuItem>
                     <MenuItem Header="Help" FontSize="14" Margin="5,0">
                         <MenuItem Name="AboutButton" Header="About" Click="AboutButton_Click"/>
@@ -34,103 +38,189 @@
         <WrapPanel Height="120" Width="330" Background="Black" Orientation="Horizontal" 
                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Viewbox  Margin="10,10,0,30" Height="42" Width="200" Stretch="Uniform">
-                <TextBlock Background="Transparent" Text="{Binding UserName}" Foreground="Wheat"
+                <TextBlock Background="Transparent" Text="{Binding SelectedUser.Nickname}" Foreground="Wheat"
                      />
             </Viewbox>
-            <TextBlock Background="Transparent" Text="{Binding CurrentLevel}" Foreground="Wheat"
+            <TextBlock Background="Transparent" Text="{Binding CurrentGame.CurrentLevel}" Foreground="Wheat"
                      FontSize="23" Margin="-170,75,0,0"/>
             <StackPanel Background="Transparent" Height="85" Width="80"
                         Margin="30,10,0,0">
-                <Image Source="{Binding ImageSource}"/>
+                <Image Source="{Binding SelectedUser.ImageSource}"/>
             </StackPanel>
         </WrapPanel>
         <Grid>
             <Grid Visibility="{Binding IsNewGameVisible, Converter={StaticResource BoolToVis}}">
-            <Image Source="../Avatars/clock.png" Height="60" Width="96"
+                <Image Source="../Avatars/clock.png" Height="60" Width="96"
                    Margin="560,-574,0,0"/>
-            <Label Content="{Binding SecondsRemaining}" FontSize="50" Margin="790,-105,0.2,485"/>
-            <WrapPanel Height="456" Width="931">
-            <StackPanel Background="Blue" Height="350" Width="200" HorizontalAlignment="Left" Margin="30,10,0,15">
-                <Image Source="../HangmanFrames/1.jpg"/>
-            </StackPanel>
-            <Button Height="45" Width="45" Margin="180,0,0,220" FontSize="30"
-                    FontWeight="Bold"/>
-            <Button Height="45" Width="45" Margin="20,0,0,220"/>
-            <Button Height="45" Width="45" Margin="20,0,0,220"/>
-            <Button Height="45" Width="45" Margin="20,0,0,220"/>
-            <Button Height="45" Width="45" Margin="20,0,0,220"/>
-            <Button Height="45" Width="45" Margin="20,0,0,220"/>
-            <Grid Background="#7a7a52" Height="202" Width="458" Margin="-370,150,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="15"/>
-                    <ColumnDefinition Width="60"/>
-                    <ColumnDefinition Width="60"/>
-                    <ColumnDefinition Width="60"/>
-                    <ColumnDefinition Width="60"/>
-                    <ColumnDefinition Width="60"/>
-                    <ColumnDefinition Width="60"/>
-                    <ColumnDefinition Width="60"/>
-                    <ColumnDefinition Width="10"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="50"/>
-                    <RowDefinition Height="50"/>
-                    <RowDefinition Height="50"/>
-                    <RowDefinition Height="50"/>
-                </Grid.RowDefinitions>
-                <Button Grid.Column="1" Content="A" FontSize="20" Margin="3,3,3,3"/>
-                <Button Grid.Column="2" Content="B" FontSize="20" Margin="3,3,3,3"/>
-                <Button Grid.Column="3" Content="C" FontSize="20" Margin="3,3,3,3"/>
-                <Button Grid.Column="4" Content="D" FontSize="20" Margin="3,3,3,3"/>
-                <Button Grid.Column="5" Content="E" FontSize="20" Margin="3,3,3,3"/>
-                <Button Grid.Column="6" Content="F" FontSize="20" Margin="3,3,3,3"/>
-                <Button Grid.Column="7" Content="G" FontSize="20" Margin="3,3,3,3"/>
+                <Label Content="{Binding CurrentGame.SecondsRemainingStr, UpdateSourceTrigger=PropertyChanged}" 
+                   FontSize="50" Margin="790,-105,0.2,485"/>
+                <WrapPanel Height="456" Width="931">
+                    <StackPanel Height="350" Width="200" HorizontalAlignment="Left" Margin="30,10,0,15">
+                        <Image Source="{Binding CurrentGame.CurrentImage}"/>
+                    </StackPanel>
+                    <Button Height="45" Width="45" Margin="180,0,0,220" FontSize="30"
+                    FontWeight="Bold" Content="{Binding WrongClick}"/>
+                    <Button Height="45" Width="45" Margin="20,0,0,220"/>
+                    <Button Height="45" Width="45" Margin="20,0,0,220"/>
+                    <Button Height="45" Width="45" Margin="20,0,0,220"/>
+                    <Button Height="45" Width="45" Margin="20,0,0,220"/>
+                    <Button Height="45" Width="45" Margin="20,0,0,220"/>
+                    <Grid Background="#7a7a52" Height="202" Width="458" Margin="-370,150,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="15"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="10"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="50"/>
+                        </Grid.RowDefinitions>
+                        <Button Name="AButton" Grid.Column="1" Content="A" FontSize="20" Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=AButton}"/>
+                        <Button Name="BButton" Grid.Column="2" Content="B" FontSize="20" Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=BButton}"/>
+                        <Button Name="CButton" Grid.Column="3" Content="C" FontSize="20" Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=CButton}"
+                                />
+                        <Button Name="DButton" Grid.Column="4" Content="D" FontSize="20" Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=DButton}"
+                                />
+                        <Button Name="EButton" Grid.Column="5" Content="E" FontSize="20" Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=EButton}"
+                                />
+                        <Button Name="FButton" Grid.Column="6" Content="F" FontSize="20" Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=FButton}"
+                                />
+                        <Button Name="GButton" Grid.Column="7" Content="G" FontSize="20" Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=GButton}"
+                                />
 
-                <Button Grid.Column="1" Grid.Row="1" Content="H"  FontSize="20"
-                    Margin="3,3,3,3"/>
-                <Button Grid.Column="2" Grid.Row="1" Content="I"  FontSize="20"
-                    Margin="3,3,3,3"/>
-                <Button Grid.Column="3" Grid.Row="1" Content="J"  FontSize="20"
-                    Margin="3,3,3,3"/>
-                <Button Grid.Column="4" Grid.Row="1" Content="K"  FontSize="20"
-                    Margin="3,3,3,3"/>
-                <Button Grid.Column="5" Grid.Row="1" Content="L"  FontSize="20"
-                    Margin="3,3,3,3"/>
-                <Button Grid.Column="6" Grid.Row="1" Content="M"  FontSize="20"
-                    Margin="3,3,3,3"/>
-                <Button Grid.Column="7" Grid.Row="1" Content="N"  FontSize="20"
-                    Margin="3,3,3,3"/>
+                        <Button Name="HButton" Grid.Column="1" Grid.Row="1" Content="H"  FontSize="20"
+                    Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=HButton}"
+                                />
+                        <Button Name="IButton" Grid.Column="2" Grid.Row="1" Content="I"  FontSize="20"
+                    Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=IButton}"
+                                />
+                        <Button Name="JButton" Grid.Column="3" Grid.Row="1" Content="J"  FontSize="20"
+                    Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=JButton}"
+                                />
+                        <Button Name="KButton" Grid.Column="4" Grid.Row="1" Content="K"  FontSize="20"
+                    Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=KButton}"
+                                />
+                        <Button Name="LButton" Grid.Column="5" Grid.Row="1" Content="L"  FontSize="20"
+                    Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=LButton}"
+                                />
+                        <Button Name="MButton" Grid.Column="6" Grid.Row="1" Content="M"  FontSize="20"
+                    Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=MButton}"
+                                />
+                        <Button Name="NButton" Grid.Column="7" Grid.Row="1" Content="N"  FontSize="20"
+                    Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=NButton}"
+                                />
 
-                <Button Grid.Column="1" Grid.Row="2" Content="O"  FontSize="20"
-                        Margin="3,3,3,3"/>
-                <Button Grid.Column="2" Grid.Row="2" Content="P"  FontSize="20"
-                        Margin="3,3,3,3"/>
-                <Button Grid.Column="3" Grid.Row="2" Content="Q"  FontSize="20"
-                        Margin="3,3,3,3"/>
-                <Button Grid.Column="4" Grid.Row="2" Content="R"  FontSize="20"
-                        Margin="3,3,3,3"/>
-                <Button Grid.Column="5" Grid.Row="2" Content="S"  FontSize="20"
-                        Margin="3,3,3,3"/>
-                <Button Grid.Column="6" Grid.Row="2" Content="T"  FontSize="20"
-                        Margin="3,3,3,3"/>
-                <Button Grid.Column="7" Grid.Row="2" Content="U"  FontSize="20"
-                        Margin="3,3,3,3"/>
+                        <Button Name="OButton" Grid.Column="1" Grid.Row="2" Content="O"  FontSize="20"
+                        Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=OButton}"
+                                />
+                        <Button Name="PButton" Grid.Column="2" Grid.Row="2" Content="P"  FontSize="20"
+                        Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=PButton}"
+                                />
+                        <Button Name="QButton" Grid.Column="3" Grid.Row="2" Content="Q"  FontSize="20"
+                        Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=QButton}"
+                                />
+                        <Button Name="RButton" Grid.Column="4" Grid.Row="2" Content="R"  FontSize="20"
+                        Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=RButton}"
+                                />
+                        <Button Name="SButton" Grid.Column="5" Grid.Row="2" Content="S"  FontSize="20"
+                        Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=SButton}"
+                                />
+                        <Button Name="TButton" Grid.Column="6" Grid.Row="2" Content="T"  FontSize="20"
+                        Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=TButton}"
+                                />
+                        <Button Name="UButton" Grid.Column="7" Grid.Row="2" Content="U"  FontSize="20"
+                        Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=UButton}"
+                                />
 
-                <Button Grid.Column="2" Grid.Row="3" Content="V"  FontSize="20"
-                        Margin="3,3,3,3"/>
-                <Button Grid.Column="3" Grid.Row="3" Content="W"  FontSize="20"
-                        Margin="3,3,3,3"/>
-                <Button Grid.Column="4" Grid.Row="3" Content="X"  FontSize="20"
-                        Margin="3,3,3,3"/>
-                <Button Grid.Column="5" Grid.Row="3" Content="Y"  FontSize="20"
-                        Margin="3,3,3,3"/>
-                <Button Grid.Column="6" Grid.Row="3" Content="Z"  FontSize="20"
-                        Margin="3,3,3,3"/>
-            </Grid>
-            <TextBox Background="Black" Height="50" Width="553" Margin="25,30,0,0" HorizontalAlignment="Left" 
-                     Text="Categorie: _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "  FontSize="30"
-                     Foreground="Wheat"/>
-            </WrapPanel>
+                        <Button Name="VButton" Grid.Column="2" Grid.Row="3" Content="V"  FontSize="20"
+                        Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=VButton}"
+                                />
+                        <Button Name="WButton" Grid.Column="3" Grid.Row="3" Content="W"  FontSize="20"
+                        Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=WButton}"
+                                />
+                        <Button Name="XButton" Grid.Column="4" Grid.Row="3" Content="X"  FontSize="20"
+                        Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=XButton}"
+                                />
+                        <Button Name="YButton" Grid.Column="5" Grid.Row="3" Content="Y"  FontSize="20"
+                        Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=YButton}"
+                                />
+                        <Button Name="ZButton" Grid.Column="6" Grid.Row="3" Content="Z"  FontSize="20"
+                        Margin="3,3,3,3"
+                                Command="{Binding ButtonClicked}"
+                                CommandParameter="{Binding ElementName=ZButton}"
+                                />
+                    </Grid>
+                    <StackPanel Orientation="Horizontal"  Margin="25,30,0,0">
+                        <Viewbox Height="50" HorizontalAlignment="Left">
+                            <TextBlock Text="{Binding CurrentGame.CurrentCategory, UpdateSourceTrigger=PropertyChanged}"  
+                                 FontSize="30" Background="Black"
+                                 Foreground="Wheat"/>
+                        </Viewbox>
+                        <Viewbox Height="50" Width="553" HorizontalAlignment="Left" Margin="-1,0,0,0">
+                            <TextBlock Text="{Binding CurrentGame.MaskedWord, UpdateSourceTrigger=PropertyChanged}"  
+                                 FontSize="30" Background="Black"
+                                 Foreground="Wheat"/>
+                        </Viewbox>
+                    </StackPanel>
+                </WrapPanel>
             </Grid>
             <Grid Visibility="{Binding IsStartTextVisible, Converter={StaticResource BoolToVis}}">
                 <Label Content="Hello! To start the game:" FontSize="35"  Margin="280,120,0,0"/>

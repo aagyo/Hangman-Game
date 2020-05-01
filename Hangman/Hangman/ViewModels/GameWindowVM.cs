@@ -15,19 +15,38 @@ namespace Hangman.ViewModels
     public class GameWindowVM : BaseVM
     {
         private GameWIndowOperations operation;
-        public User selectedUser;
-        public Game currentGame;
-        public DispatcherTimer timer = new DispatcherTimer();
-        public int delay = 45;
-        public DateTime deadline;
+        public List<Button> pressedButtons = new List<Button>();
         public GameWindowVM(User _selectedUser)
         {
             if (operation == null)
             {
                 operation = new GameWIndowOperations(this);
-                selectedUser = _selectedUser;
-                UserName = selectedUser.Nickname;
-                ImageSource = selectedUser.ImageSource;
+                SelectedUser = _selectedUser;
+                CurrentGame = new Game();
+            }
+        }
+
+
+        private User selectedUser;
+        public User SelectedUser
+        {
+            get { return selectedUser; }
+            set
+            {
+                selectedUser = value;
+                OnPropertyChanged("SelectedUser");
+            }
+        }
+
+
+        private Game currentGame;
+        public Game CurrentGame
+        {
+            get { return currentGame; }
+            set
+            {
+                currentGame = value;
+                OnPropertyChanged("CurrentGame");
             }
         }
 
@@ -38,55 +57,66 @@ namespace Hangman.ViewModels
             {
                 if (startGameCommand == null)
                 {
-                    startGameCommand = new RelayCommand(param => { currentGame = operation.StartGame(); IsStartTextVisible = false;
-                        IsNewGameVisible = true; CurrentLevel = currentGame.CurrentLevel;
-                        timer.Tick += (sender, args) => operation.TimerTick(); operation.StartTimer();
+                    startGameCommand = new RelayCommand(param =>
+                    {
+                        operation.StartGame(CurrentGame); IsStartTextVisible = false;
+                        IsNewGameVisible = true;
+                        CurrentGame.timer.Tick += (sender, args) => operation.TimerTick(); operation.StartTimer();
                     });
                 }
                 return startGameCommand;
             }
         }
 
-        private string secondsRemaining;
-        public string SecondsRemaining
+        public ICommand CheckCategoryCommand { get { return new RelayCommand(param => { operation.UncheckAll(); IsAllChecked = true; }); } }
+        public ICommand CheckCarsCommand
         {
-            get { return secondsRemaining; }
-            set
+            get
             {
-                secondsRemaining = value;
-                OnPropertyChanged("SecondsRemaining");
-            }
-        }
-        private string currentLevel;
-        public string CurrentLevel
-        {
-            get { return currentLevel; }
-            set
-            {
-                currentLevel = value;
-                OnPropertyChanged("CurrentLevel");
+                return new RelayCommand(param =>
+                {
+                    operation.UncheckAll(); IsCarsChecked = true;
+                    operation.ChoseRandomWord("Cars", currentGame);
+                });
             }
         }
 
-        private string imageSource;
-        public string ImageSource
+        public ICommand ButtonClicked
         {
-            get { return imageSource; }
+            get { return new RelayCommand(param => operation.ClickedButton(param)); }
+        }
+
+        private string wrongClick;
+        public string WrongClick
+        {
+            get { return wrongClick; }
             set
             {
-                imageSource = value;
-                OnPropertyChanged("ImageSource");
+                wrongClick = value;
+                OnPropertyChanged("WrongClick");
             }
         }
 
-        private string userName;
-        public string UserName
+
+        private bool isAllChecked;
+        public bool IsAllChecked
         {
-            get { return userName; }
+            get { return isAllChecked; }
             set
             {
-                userName = value;
-                OnPropertyChanged("UserName");
+                isAllChecked = value;
+                OnPropertyChanged("IsAllChecked");
+            }
+        }
+
+        private bool isCarsChecked;
+        public bool IsCarsChecked
+        {
+            get { return isCarsChecked; }
+            set
+            {
+                isCarsChecked = value;
+                OnPropertyChanged("IsCarsChecked");
             }
         }
 
