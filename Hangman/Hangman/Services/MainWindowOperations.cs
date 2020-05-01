@@ -43,7 +43,7 @@ namespace Hangman.Services
             //wind.DataContext = GameWindow
             //ObservableCollection<User> uL = param as ObservableCollection<User>;
             //uL.Remove(mainWindowVM.SelectedUser);
-            GameWindow view = new GameWindow();
+            GameWindow view = new GameWindow(mainWindowVM.SelectedUser);
             view.Show();
         }
         public string SetImageUpPath(User user)

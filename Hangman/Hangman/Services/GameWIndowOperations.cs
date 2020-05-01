@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace Hangman.Services
 {
@@ -16,9 +17,31 @@ namespace Hangman.Services
         {
             this.gameVM = gameWindowVM;
         }
-        public void StartGame()
+        public Game StartGame()
         {
-            Game game;
+            Game game = new Game();
+            return game;
+        }
+
+        public void StartTimer()
+        {
+            gameVM.deadline = DateTime.Now.AddSeconds(gameVM.delay);
+            gameVM.timer.Start();
+        }
+
+        public void TimerTick()
+        {
+            int secondsRemaining = (gameVM.deadline - DateTime.Now).Seconds;
+            if (secondsRemaining == 0)
+            {
+                gameVM.timer.Stop();
+                gameVM.timer.IsEnabled = false;
+                gameVM.delay = 30;
+            }
+            else
+            {
+                gameVM.SecondsRemaining = secondsRemaining.ToString();
+            }
         }
     }
 }

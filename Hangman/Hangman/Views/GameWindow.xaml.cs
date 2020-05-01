@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Hangman.Models;
+using Hangman.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,15 +21,21 @@ namespace Hangman.Views
     /// </summary>
     public partial class GameWindow : Window
     {
-        public GameWindow()
+        public GameWindow(User selectedUser)
         {
             InitializeComponent();
+            DataContext = new GameWindowVM(selectedUser);
         }
 
         private void AboutButton_Click(object sender, RoutedEventArgs e)
         {
             AboutWindow wind = new AboutWindow();
             wind.Show();
+        }
+
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

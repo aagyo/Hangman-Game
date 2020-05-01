@@ -10,9 +10,6 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </Window.Resources>
-    <Window.DataContext>
-        <local:GameWindowVM/>
-    </Window.DataContext>
     <WrapPanel Background="#c2c2a3" Height="630">
         <StackPanel VerticalAlignment="Top" Height="30" Width="1148">
             <ToolBar Height="30" Background="#7a7a52" Margin="-13,0,200,0">
@@ -22,7 +19,7 @@
                         <MenuItem Header="Open game"/>
                         <MenuItem Header="Save game"/>
                         <MenuItem Header="Statistics"/>
-                        <MenuItem Header="Exit"/>
+                        <MenuItem Name ="ExitButton" Header="Exit" Click="ExitButton_Click"/>
                     </MenuItem>
                     <MenuItem Header="Categories" FontSize="14" Margin="5,0">
                         <MenuItem Header="All categories" IsCheckable="True"/>
@@ -37,21 +34,21 @@
         <WrapPanel Height="120" Width="330" Background="Black" Orientation="Horizontal" 
                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Viewbox  Margin="10,10,0,30" Height="42" Width="200" Stretch="Uniform">
-                <TextBlock Background="Transparent" Text="andreixx2xd" Foreground="Wheat"
+                <TextBlock Background="Transparent" Text="{Binding UserName}" Foreground="Wheat"
                      />
             </Viewbox>
-            <TextBlock Background="Transparent" Text="Level 1" Foreground="Wheat"
+            <TextBlock Background="Transparent" Text="{Binding CurrentLevel}" Foreground="Wheat"
                      FontSize="23" Margin="-170,75,0,0"/>
-            <StackPanel Background="Blue" Height="85" Width="80"
+            <StackPanel Background="Transparent" Height="85" Width="80"
                         Margin="30,10,0,0">
-                <Image Source="../Avatars/1.jpg"/>
+                <Image Source="{Binding ImageSource}"/>
             </StackPanel>
         </WrapPanel>
         <Grid>
             <Grid Visibility="{Binding IsNewGameVisible, Converter={StaticResource BoolToVis}}">
             <Image Source="../Avatars/clock.png" Height="60" Width="96"
                    Margin="560,-574,0,0"/>
-            <Label Content="0:30" FontSize="50" Margin="790,-105,0.2,485"/>
+            <Label Content="{Binding SecondsRemaining}" FontSize="50" Margin="790,-105,0.2,485"/>
             <WrapPanel Height="456" Width="931">
             <StackPanel Background="Blue" Height="350" Width="200" HorizontalAlignment="Left" Margin="30,10,0,15">
                 <Image Source="../HangmanFrames/1.jpg"/>
