@@ -37,5 +37,6 @@ namespace Hangman.Views
         {
             Close();
         }
+
     }
 }

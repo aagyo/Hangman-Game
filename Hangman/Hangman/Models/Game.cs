@@ -14,6 +14,7 @@ namespace Hangman.Models
     {
         public List<string> categories = new List<string>();
         public int levelContor = 1;
+        public int numberOfX = 0;
         public string wordToGuess;
 
         public Game()
@@ -73,8 +74,6 @@ namespace Hangman.Models
             }
         }
 
-        public int numberOfX;
- 
         private void fillCategories()
         {
             categories.Add("../../Categories/cars.txt");

@@ -86,17 +86,68 @@ namespace Hangman.ViewModels
             get { return new RelayCommand(param => operation.ClickedButton(param)); }
         }
 
-        private string wrongClick;
-        public string WrongClick
+        #region WrongClicks
+        private string wrongClick1;
+        public string WrongClick1
         {
-            get { return wrongClick; }
+            get { return wrongClick1; }
             set
             {
-                wrongClick = value;
-                OnPropertyChanged("WrongClick");
+                wrongClick1 = value;
+                OnPropertyChanged("WrongClick1");
             }
         }
-
+        private string wrongClick2;
+        public string WrongClick2
+        {
+            get { return wrongClick2; }
+            set
+            {
+                wrongClick2 = value;
+                OnPropertyChanged("WrongClick2");
+            }
+        }
+        private string wrongClick3;
+        public string WrongClick3
+        {
+            get { return wrongClick3; }
+            set
+            {
+                wrongClick3 = value;
+                OnPropertyChanged("WrongClick3");
+            }
+        }
+        private string wrongClick4;
+        public string WrongClick4
+        {
+            get { return wrongClick4; }
+            set
+            {
+                wrongClick4 = value;
+                OnPropertyChanged("WrongClick4");
+            }
+        }
+        private string wrongClick5;
+        public string WrongClick5
+        {
+            get { return wrongClick5; }
+            set
+            {
+                wrongClick5 = value;
+                OnPropertyChanged("WrongClick5");
+            }
+        }
+        private string wrongClick6;
+        public string WrongClick6
+        {
+            get { return wrongClick6; }
+            set
+            {
+                wrongClick6 = value;
+                OnPropertyChanged("WrongClick6");
+            }
+        }
+        #endregion
 
         private bool isAllChecked;
         public bool IsAllChecked

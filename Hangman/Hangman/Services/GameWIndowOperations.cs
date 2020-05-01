@@ -27,6 +27,16 @@ namespace Hangman.Services
             //gameVM.CurrentGame = new Game();
             cG.CurrentLevel = "Level 1";
         }
+
+        private void ResetAll()
+        {
+            gameVM.CurrentGame = new Game();
+            gameVM.IsNewGameVisible = false;
+            gameVM.IsStartTextVisible = true;
+            EnableBtns();
+            ResetWrongBtns();
+            ResetCheckedCategory();
+        }
         public void StartTimer()
         {
             gameVM.CurrentGame.deadline = DateTime.Now.AddSeconds(gameVM.CurrentGame.delay);
@@ -46,6 +56,21 @@ namespace Hangman.Services
             {
                 gameVM.CurrentGame.SecondsRemainingStr = secondsRemaining.ToString();
             }
+        }
+
+        private void ResetWrongBtns()
+        {
+            gameVM.WrongClick1 = "";
+            gameVM.WrongClick2 = "";
+            gameVM.WrongClick3 = "";
+            gameVM.WrongClick4 = "";
+            gameVM.WrongClick5 = "";
+            gameVM.WrongClick6 = "";
+        }
+        private void ResetCheckedCategory()
+        {
+            gameVM.IsAllChecked = false;
+            gameVM.IsCarsChecked = false;
         }
 
         private void EnableBtns()
@@ -83,7 +108,7 @@ namespace Hangman.Services
 
         private bool CheckWinStatus(Game cG)
         {
-            if (cG.wordToGuess.ToLower() == cG.MaskedWord.Replace(" ", string.Empty).ToLower())
+            if (cG.wordToGuess.Replace(" ", string.Empty).ToLower() == cG.MaskedWord.Replace(" ", string.Empty).ToLower())
                 return true;
             else
                 return false;
@@ -98,24 +123,71 @@ namespace Hangman.Services
 
             if (!_match.Success)
             {
-                //imagine si x-uri
-        
+                ++cG.numberOfX;
+                switch (cG.numberOfX)
+                {
+                    case 1:
+                        cG.CurrentImage = "../HangmanFrames/2.jpg";
+                        gameVM.WrongClick1 = "X";
+                        break;
+                    case 2:
+                        cG.CurrentImage = "../HangmanFrames/3.jpg";
+                        gameVM.WrongClick2 = "X";
+                        break;
+                    case 3:
+                        cG.CurrentImage = "../HangmanFrames/4.jpg";
+                        gameVM.WrongClick3 = "X";
+                        break;
+                    case 4:
+                        cG.CurrentImage = "../HangmanFrames/5.jpg";
+                        gameVM.WrongClick4 = "X";
+                        break;
+                    case 5:
+                        cG.CurrentImage = "../HangmanFrames/6.jpg";
+                        gameVM.WrongClick5 = "X";
+                        break;
+                    case 6:
+                        cG.CurrentImage = "../HangmanFrames/7.jpg";
+                        gameVM.WrongClick6 = "X";
+                        break;
+                    default:
+                        break;
+                }
+                if (cG.numberOfX == 6)
+                {
+                    MessageBoxResult result = MessageBox.Show("You lost :( \n Would you like to retry?",
+                                         "Confirmation",
+                                         MessageBoxButton.YesNo,
+                                         MessageBoxImage.Question);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        ResetAll();
+                    }
+                    else
+                    {
+                        foreach (Window item in Application.Current.Windows)
+                        {
+                            if (item.DataContext == gameVM) item.Close();
+                        }
+                    }
+                }
             }
             else
             {
                 string word = cG.MaskedWord;
                 foreach (Match match in Regex.Matches(cG.wordToGuess, matchString, RegexOptions.IgnoreCase))
                 {
-                    word = word.Remove(match.Index * 2, 1).Insert(match.Index * 2, content);
+                    word = word.Remove(match.Index*2, 1).Insert(match.Index*2, content);
                     cG.MaskedWord = word;
                 }
                 if (CheckWinStatus(cG) == true)
                 {
-                    if (cG.levelContor != 5)
+                    if (cG.levelContor != 5 && cG.numberOfX != 6)
                     {
                         cG.levelContor++;
                         cG.CurrentLevel = "Level " + cG.levelContor.ToString();
                         ChoseRandomWord(cG.CurrentCategory.Substring(0,cG.CurrentCategory.Length - 3), cG);
+                        StartTimer();
                         EnableBtns();
                     }
                 }
@@ -124,7 +196,14 @@ namespace Hangman.Services
         private void MaskWord(Game cG)
         {
             if (cG.wordToGuess != null)
+            {
+                string wordCopy = cG.wordToGuess;
+                cG.wordToGuess = cG.wordToGuess.Replace(" ", "  ");
+                cG.wordToGuess = cG.wordToGuess.Replace("'", "' ");
+                cG.wordToGuess = cG.wordToGuess.Replace("-", "- ");
                 cG.MaskedWord = new Regex("([a-zA-z])").Replace(cG.wordToGuess, "_ ");
+                cG.wordToGuess = wordCopy;
+            }
         }
 
         public void ChoseRandomWord(string category, Game cG)
