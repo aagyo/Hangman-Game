@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<GameWindowVM xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Alphabet>
+    <Letter key="A" value="false" />
+    <Letter key="B" value="false" />
+    <Letter key="C" value="true" />
+    <Letter key="D" value="true" />
+    <Letter key="E" value="false" />
+    <Letter key="F" value="true" />
+    <Letter key="G" value="true" />
+    <Letter key="H" value="true" />
+    <Letter key="I" value="false" />
+    <Letter key="J" value="true" />
+    <Letter key="K" value="true" />
+    <Letter key="L" value="true" />
+    <Letter key="M" value="false" />
+    <Letter key="N" value="true" />
+    <Letter key="O" value="true" />
+    <Letter key="P" value="true" />
+    <Letter key="Q" value="true" />
+    <Letter key="R" value="true" />
+    <Letter key="S" value="false" />
+    <Letter key="T" value="false" />
+    <Letter key="U" value="true" />
+    <Letter key="V" value="true" />
+    <Letter key="W" value="true" />
+    <Letter key="X" value="true" />
+    <Letter key="Y" value="true" />
+    <Letter key="Z" value="true" />
+  </Alphabet>
+  <SelectedUser>
+    <contor>13</contor>
+    <Nickname>andreixx2xd</Nickname>
+    <ImageSource>../Avatars/13.jpg</ImageSource>
+  </SelectedUser>
+  <CurrentGame>
+    <categories>
+      <string>../../Categories/cars.txt</string>
+      <string>../../Categories/cars.txt</string>
+    </categories>
+    <levelContor>2</levelContor>
+    <numberOfX>2</numberOfX>
+    <wordToGuess>Mitsubishi</wordToGuess>
+    <secondsRemaining>27</secondsRemaining>
+    <timer>
+      <IsEnabled>true</IsEnabled>
+      <Interval />
+    </timer>
+    <delay>27</delay>
+    <deadline>2020-05-02T22:59:39.0987505+03:00</deadline>
+    <CurrentImage>../HangmanFrames/3.jpg</CurrentImage>
+    <CurrentCategory>Cars : </CurrentCategory>
+    <SecondsRemainingStr>27</SecondsRemainingStr>
+    <MaskedWord>M I T S _ B I S _ I </MaskedWord>
+    <CurrentLevel>Level 2</CurrentLevel>
+  </CurrentGame>
+  <WrongClick1>X</WrongClick1>
+  <WrongClick2>X</WrongClick2>
+  <WrongClick3 />
+  <WrongClick4 />
+  <WrongClick5 />
+  <WrongClick6 />
+  <IsAllChecked>false</IsAllChecked>
+  <IsCarsChecked>true</IsCarsChecked>
+  <IsNewGameVisible>true</IsNewGameVisible>
+  <IsStartTextVisible>false</IsStartTextVisible>
+</GameWindowVM>

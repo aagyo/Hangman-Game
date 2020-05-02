@@ -21,10 +21,13 @@ namespace Hangman.Views
     /// </summary>
     public partial class GameWindow : Window
     {
+        SerializationActions<GameWindowVM> actions = new SerializationActions<GameWindowVM>();
+        private User sU;
         public GameWindow(User selectedUser)
         {
             InitializeComponent();
             DataContext = new GameWindowVM(selectedUser);
+            sU = selectedUser;
         }
 
         private void AboutButton_Click(object sender, RoutedEventArgs e)
@@ -38,5 +41,9 @@ namespace Hangman.Views
             Close();
         }
 
+        private void OpenGameBtn_Click(object sender, RoutedEventArgs e)
+        {
+            DataContext = actions.DeserializeObject($"{sU.Nickname.ToLower()}Saved.xml");
+        }
     }
 }

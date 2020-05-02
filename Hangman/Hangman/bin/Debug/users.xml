@@ -12,13 +12,7 @@
       <ImageSource>../Avatars/5.jpg</ImageSource>
     </User>
   </UsersList>
-  <CanExecuteCommand>true</CanExecuteCommand>
-  <ImagePath>../Avatars/5.jpg</ImagePath>
-  <SelectedUser>
-    <contor>5</contor>
-    <Nickname>misulica123</Nickname>
-    <ImageSource>../Avatars/5.jpg</ImageSource>
-  </SelectedUser>
-  <IsUserSelected>true</IsUserSelected>
+  <CanExecuteCommand>false</CanExecuteCommand>
+  <IsUserSelected>false</IsUserSelected>
   <IsEnterVisible>false</IsEnterVisible>
 </MainWindowViewModel>

@@ -16,7 +16,7 @@ namespace Hangman.Services
     class GameWIndowOperations
     {
         private GameWindowVM gameVM;
-        //private SerializationActions actions = new SerializationActions();
+        private SerializationActions<GameWindowVM> actions = new SerializationActions<GameWindowVM>();
         public GameWIndowOperations(GameWindowVM gameWindowVM)
         {
             this.gameVM = gameWindowVM;
@@ -26,6 +26,19 @@ namespace Hangman.Services
         {
             //gameVM.CurrentGame = new Game();
             cG.CurrentLevel = "Level 1";
+            //FillDict();
+        }
+
+        public void FillDict()
+        {
+            for (char c = 'A'; c <= 'Z'; c++)
+                gameVM.alphabet[c.ToString()] = true;
+        }
+
+        public void SaveCurrentGame(User sU)
+        {
+            gameVM.CurrentGame.delay = gameVM.CurrentGame.secondsRemaining;
+            actions.SerializeObject($"{sU.Nickname.ToLower()}Saved.xml", gameVM);
         }
 
         private void ResetAll()
@@ -33,28 +46,32 @@ namespace Hangman.Services
             gameVM.CurrentGame = new Game();
             gameVM.IsNewGameVisible = false;
             gameVM.IsStartTextVisible = true;
-            EnableBtns();
+            gameVM.IsOpenEnabled = true;
+            FillDict();
             ResetWrongBtns();
             ResetCheckedCategory();
         }
+
         public void StartTimer()
         {
             gameVM.CurrentGame.deadline = DateTime.Now.AddSeconds(gameVM.CurrentGame.delay);
             gameVM.CurrentGame.timer.Start();
+            gameVM.CurrentGame.timer.Tick += new EventHandler(TimerTick);
         }
 
-        public void TimerTick()
+        public void TimerTick(object send, EventArgs e)
         {
-            int secondsRemaining = (gameVM.CurrentGame.deadline - DateTime.Now).Seconds;
-            if (secondsRemaining == 0)
+            gameVM.CurrentGame.secondsRemaining = (gameVM.CurrentGame.deadline - DateTime.Now).Seconds;
+            if (gameVM.CurrentGame.secondsRemaining == -1)
             {
                 gameVM.CurrentGame.timer.Stop();
                 gameVM.CurrentGame.timer.IsEnabled = false;
-                gameVM.CurrentGame.delay = 30;
+                gameVM.CurrentGame.delay = 45;
+                LostMessage();
             }
             else
             {
-                gameVM.CurrentGame.SecondsRemainingStr = secondsRemaining.ToString();
+                gameVM.CurrentGame.SecondsRemainingStr = gameVM.CurrentGame.secondsRemaining.ToString();
             }
         }
 
@@ -67,26 +84,31 @@ namespace Hangman.Services
             gameVM.WrongClick5 = "";
             gameVM.WrongClick6 = "";
         }
+        private void ResetNextLvl(Game cG)
+        {
+            ResetWrongBtns();
+            cG.CurrentImage = "../HangmanFrames/1.jpg";
+            cG.numberOfX = 0;
+            FillDict();
+            cG.delay = 45;
+            StartTimer();
+        }
         private void ResetCheckedCategory()
         {
             gameVM.IsAllChecked = false;
             gameVM.IsCarsChecked = false;
         }
 
-        private void EnableBtns()
+        public string BtnCont(object param)
         {
-            foreach(Button btn in gameVM.pressedButtons)
-            {
-                btn.IsEnabled = true;
-            }
-            gameVM.pressedButtons.Clear();
+            Button btn = param as Button;
+            return btn.Content.ToString();
         }
 
         public void ClickedButton(object param)
         {
             Button btn = param as Button;
-            gameVM.pressedButtons.Add(btn);
-            btn.IsEnabled = false;
+            gameVM.alphabet[btn.Content.ToString()] = false;
             UnmaskWord(btn.Content.ToString());
         }
 
@@ -112,6 +134,43 @@ namespace Hangman.Services
                 return true;
             else
                 return false;
+        }
+
+        private void LostMessage()
+        {
+            MessageBoxResult result = MessageBox.Show("You lost :( \n Would you like to retry?",
+                                        "Confirmation",
+                                        MessageBoxButton.YesNo,
+                                        MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                ResetAll();
+            }
+            else
+            {
+                foreach (Window item in Application.Current.Windows)
+                {
+                    if (item.DataContext == gameVM) item.Close();
+                }
+            }
+        }
+        private void WinMessage()
+        {
+            MessageBoxResult result = MessageBox.Show("You win :) \n Would you like to play again?",
+                                       "Confirmation",
+                                       MessageBoxButton.YesNo,
+                                       MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                ResetAll();
+            }
+            else
+            {
+                foreach (Window item in Application.Current.Windows)
+                {
+                    if (item.DataContext == gameVM) item.Close();
+                }
+            }
         }
 
         private void UnmaskWord(string content)
@@ -155,21 +214,8 @@ namespace Hangman.Services
                 }
                 if (cG.numberOfX == 6)
                 {
-                    MessageBoxResult result = MessageBox.Show("You lost :( \n Would you like to retry?",
-                                         "Confirmation",
-                                         MessageBoxButton.YesNo,
-                                         MessageBoxImage.Question);
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        ResetAll();
-                    }
-                    else
-                    {
-                        foreach (Window item in Application.Current.Windows)
-                        {
-                            if (item.DataContext == gameVM) item.Close();
-                        }
-                    }
+                    cG.timer.Stop();
+                    LostMessage();
                 }
             }
             else
@@ -186,9 +232,13 @@ namespace Hangman.Services
                     {
                         cG.levelContor++;
                         cG.CurrentLevel = "Level " + cG.levelContor.ToString();
-                        ChoseRandomWord(cG.CurrentCategory.Substring(0,cG.CurrentCategory.Length - 3), cG);
-                        StartTimer();
-                        EnableBtns();
+                        ChoseRandomWord(cG.CurrentCategory.Substring(0, cG.CurrentCategory.Length - 3), cG);
+                        ResetNextLvl(cG);
+                    }
+                    else
+                    {
+                        cG.timer.Stop();
+                        WinMessage();
                     }
                 }
             }

@@ -3,24 +3,51 @@ using Hangman.Models;
 using Hangman.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
+using System.Xml.Serialization;
 
 namespace Hangman.ViewModels
 {
+    [Serializable]
     public class GameWindowVM : BaseVM
     {
         private GameWIndowOperations operation;
-        public List<Button> pressedButtons = new List<Button>();
+
+        [XmlIgnore]
+        public Dictionary<string, bool> alphabet = new Dictionary<string, bool>();
+
+        [XmlArray]
+        public Letter[] Alphabet
+        {
+            get
+            {
+                return alphabet.Select(kv => new Letter() { key = kv.Key, value = kv.Value }).ToArray();
+            }
+            set
+            {
+                alphabet =  value.ToDictionary(i => i.key, i => i.value);
+            }
+        }
+
+        public GameWindowVM() 
+        {
+            if (operation == null)
+            {
+                operation = new GameWIndowOperations(this);
+            }
+        }
         public GameWindowVM(User _selectedUser)
         {
             if (operation == null)
             {
                 operation = new GameWIndowOperations(this);
+                operation.FillDict();
                 SelectedUser = _selectedUser;
                 CurrentGame = new Game();
             }
@@ -46,6 +73,10 @@ namespace Hangman.ViewModels
             set
             {
                 currentGame = value;
+                if (currentGame.secondsRemaining != 0)
+                {
+                    operation.StartTimer();
+                }
                 OnPropertyChanged("CurrentGame");
             }
         }
@@ -61,7 +92,7 @@ namespace Hangman.ViewModels
                     {
                         operation.StartGame(CurrentGame); IsStartTextVisible = false;
                         IsNewGameVisible = true;
-                        CurrentGame.timer.Tick += (sender, args) => operation.TimerTick(); operation.StartTimer();
+                        operation.StartTimer();
                     });
                 }
                 return startGameCommand;
@@ -81,9 +112,18 @@ namespace Hangman.ViewModels
             }
         }
 
-        public ICommand ButtonClicked
+        public ICommand OpenClick { get { return new RelayCommand(param => IsOpenEnabled = false); } }
+        public ICommand ButtonClicked {get { return new RelayCommand(operation.ClickedButton, param => alphabet[operation.BtnCont(param)]); } }
+
+        public ICommand SaveCommand
         {
-            get { return new RelayCommand(param => operation.ClickedButton(param)); }
+            get
+            {
+                return new RelayCommand(param =>
+                {
+                    operation.SaveCurrentGame(selectedUser);
+                });
+            }
         }
 
         #region WrongClicks
@@ -157,6 +197,17 @@ namespace Hangman.ViewModels
             {
                 isAllChecked = value;
                 OnPropertyChanged("IsAllChecked");
+            }
+        }
+
+        private bool isOpenEnabled = true;
+        public bool IsOpenEnabled
+        {
+            get { return isOpenEnabled; }
+            set
+            {
+                isOpenEnabled = value;
+                OnPropertyChanged("IsOpenEnabled");
             }
         }
 

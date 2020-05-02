@@ -23,7 +23,7 @@ namespace Hangman
     /// </summary>
     public partial class MainWindow : Window
     {
-        SerializationActions actions = new SerializationActions();
+        SerializationActions<MainWindowViewModel> actions = new SerializationActions<MainWindowViewModel>();
         public MainWindow()
         {
             InitializeComponent();

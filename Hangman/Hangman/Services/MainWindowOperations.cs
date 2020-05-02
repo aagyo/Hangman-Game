@@ -14,7 +14,7 @@ namespace Hangman.Services
     public class MainWindowOperations
     {
         private MainWindowViewModel mainWindowVM;
-        private SerializationActions actions = new SerializationActions();
+        private SerializationActions<MainWindowViewModel> actions = new SerializationActions<MainWindowViewModel>();
         public MainWindowOperations(MainWindowViewModel mainWindowVM)
         {
             this.mainWindowVM = mainWindowVM;

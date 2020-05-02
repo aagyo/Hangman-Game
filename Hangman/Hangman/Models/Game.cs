@@ -10,17 +10,19 @@ using System.Windows.Threading;
 
 namespace Hangman.Models
 {
+    [Serializable]
     public class Game : BaseVM
     {
         public List<string> categories = new List<string>();
         public int levelContor = 1;
         public int numberOfX = 0;
         public string wordToGuess;
+        public int secondsRemaining;
 
         public Game()
         {
-            //CurrentLevel = "Level 1";
             CurrentImage = "../HangmanFrames/1.jpg";
+            secondsRemaining = 0;
             fillCategories();
         }
 
@@ -41,12 +43,13 @@ namespace Hangman.Models
             get { return currentCategory; }
             set
             {
-                currentCategory = value + " : ";
+                if(value.Contains(" : "))
+                    currentCategory = value;
+                else
+                    currentCategory = value + " : ";
                 OnPropertyChanged("CurrentCategory");
             }
         }
-
-
 
         public DispatcherTimer timer = new DispatcherTimer();
         public int delay = 45;
