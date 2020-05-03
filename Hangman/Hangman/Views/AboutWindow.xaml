@@ -7,9 +7,15 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Title="AboutWindow" Height="231.938" Width="455.066">
-    <StackPanel Margin="0,0,0.4,0.4" Background="#d2a679">
-        <Label Content="Numele studentului: Agyo Andrei" FontSize="20" Margin="70,30,0,0"/>
-        <Label Content="Grupa: 10LF381" FontSize="20"  Margin="130,10,0,0"/>
-        <Label Content="Specializare: Informatica Aplicata" FontSize="20"  Margin="70,10,0,0"/>
-    </StackPanel>
+    <Grid Background="Black">
+    <DockPanel Margin="8">
+            <Border CornerRadius="6" BorderBrush="#7a7a52" Background="Blue" BorderThickness="3" DockPanel.Dock="Top">
+                <StackPanel Margin="0,0,0.4,01" Background="#c2c2a3">
+                <Label Content="Numele studentului: Agyo Andrei" FontSize="20" Margin="70,25,0,0"/>
+                <Label Content="Grupa: 10LF381" FontSize="20"  Margin="130,10,0,0"/>
+                <Label Content="Specializare: Informatica Aplicata" FontSize="20"  Margin="70,10,0,0"/>
+            </StackPanel>
+        </Border>
+    </DockPanel>
+    </Grid>
 </Window>

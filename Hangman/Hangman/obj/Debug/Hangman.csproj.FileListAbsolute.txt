@@ -36,3 +36,5 @@ D:\MVP Git\Hangman\Hangman\obj\Debug\Hangman.exe
 D:\MVP Git\Hangman\Hangman\obj\Debug\Hangman.pdb
 D:\MVP Git\Hangman\Hangman\obj\Debug\Views\AboutWindow.g.cs
 D:\MVP Git\Hangman\Hangman\obj\Debug\Views\AboutWindow.baml
+D:\MVP Git\Hangman\Hangman\obj\Debug\Views\StatsWindow.g.cs
+D:\MVP Git\Hangman\Hangman\obj\Debug\Views\StatsWindow.baml

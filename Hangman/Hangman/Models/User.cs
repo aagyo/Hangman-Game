@@ -3,6 +3,7 @@ using Hangman.Services;
 using Hangman.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,7 @@ namespace Hangman.Models
     [Serializable]
     public class User : BaseVM
     {
+        public int contor = 1;
         [XmlAttribute]
         private string nickname;
         public string Nickname
@@ -46,6 +48,7 @@ namespace Hangman.Models
             }
         }
 
-        public int contor = 1;
+        [XmlArray]
+        public ObservableCollection<Statistics> stats { get; set; }
     }
 }

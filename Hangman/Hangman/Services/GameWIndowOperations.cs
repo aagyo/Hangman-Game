@@ -2,6 +2,7 @@
 using Hangman.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -24,57 +25,58 @@ namespace Hangman.Services
 
         public void StartGame(Game cG)
         {
-            //gameVM.CurrentGame = new Game();
-            cG.CurrentLevel = "Level 1";
-            //FillDict();
+            if (gameVM.IsStartTextVisible == false)
+                ConfirmationMessage("lost");
+            else
+                cG.CurrentLevel = "Level 1";
         }
-
         public void FillDict()
         {
             for (char c = 'A'; c <= 'Z'; c++)
                 gameVM.alphabet[c.ToString()] = true;
         }
-
         public void SaveCurrentGame(User sU)
         {
             gameVM.CurrentGame.delay = gameVM.CurrentGame.secondsRemaining;
             actions.SerializeObject($"{sU.Nickname.ToLower()}Saved.xml", gameVM);
+            SavedMessage();
         }
-
         private void ResetAll()
-        {
-            gameVM.CurrentGame = new Game();
+        { 
             gameVM.IsNewGameVisible = false;
             gameVM.IsStartTextVisible = true;
             gameVM.IsOpenEnabled = true;
+            gameVM.CurrentGame.lastLvl = 0;
+            gameVM.CurrentGame.levelContor = 1;
+            gameVM.CurrentGame.CurrentLevel = "";
+            gameVM.CurrentGame.CurrentCategory = "";
+            gameVM.CurrentGame.CurrentImage = "../HangmanFrames/1.jpg";
+            gameVM.CurrentGame.timer = new DispatcherTimer();
+            gameVM.wasStartPressed = true;
+            gameVM.IsNewGameEnabled = false;
+            gameVM.IsSaveEnabled = false;
             FillDict();
             ResetWrongBtns();
-            ResetCheckedCategory();
+            UncheckAll();
         }
-
         public void StartTimer()
         {
             gameVM.CurrentGame.deadline = DateTime.Now.AddSeconds(gameVM.CurrentGame.delay);
             gameVM.CurrentGame.timer.Start();
             gameVM.CurrentGame.timer.Tick += new EventHandler(TimerTick);
         }
-
         public void TimerTick(object send, EventArgs e)
         {
             gameVM.CurrentGame.secondsRemaining = (gameVM.CurrentGame.deadline - DateTime.Now).Seconds;
             if (gameVM.CurrentGame.secondsRemaining == -1)
             {
-                gameVM.CurrentGame.timer.Stop();
-                gameVM.CurrentGame.timer.IsEnabled = false;
-                gameVM.CurrentGame.delay = 45;
-                LostMessage();
+                ConfirmationMessage("lost");
             }
             else
             {
                 gameVM.CurrentGame.SecondsRemainingStr = gameVM.CurrentGame.secondsRemaining.ToString();
             }
         }
-
         private void ResetWrongBtns()
         {
             gameVM.WrongClick1 = "";
@@ -83,39 +85,39 @@ namespace Hangman.Services
             gameVM.WrongClick4 = "";
             gameVM.WrongClick5 = "";
             gameVM.WrongClick6 = "";
+            gameVM.CurrentGame.numberOfX = 0;
         }
         private void ResetNextLvl(Game cG)
         {
             ResetWrongBtns();
             cG.CurrentImage = "../HangmanFrames/1.jpg";
             cG.numberOfX = 0;
-            FillDict();
             cG.delay = 45;
+            FillDict();
             StartTimer();
         }
-        private void ResetCheckedCategory()
-        {
-            gameVM.IsAllChecked = false;
-            gameVM.IsCarsChecked = false;
-        }
-
         public string BtnCont(object param)
         {
             Button btn = param as Button;
             return btn.Content.ToString();
         }
-
+        public void EnableOpen(object param)
+        {
+            MenuItem mI = param as MenuItem;
+            mI.IsEnabled = true;
+        }
         public void ClickedButton(object param)
         {
             Button btn = param as Button;
             gameVM.alphabet[btn.Content.ToString()] = false;
             UnmaskWord(btn.Content.ToString());
         }
-
         public void UncheckAll()
         {
             gameVM.IsAllChecked = false;
             gameVM.IsCarsChecked = false;
+            gameVM.IsDogBreedsChecked = false;
+            gameVM.IsCitiesChecked = false;
         }
 
         private static readonly Random random = new Random();
@@ -135,47 +137,120 @@ namespace Hangman.Services
             else
                 return false;
         }
-
-        private void LostMessage()
+        private void StatsGameCount(User sU, string state)
         {
-            MessageBoxResult result = MessageBox.Show("You lost :( \n Would you like to retry?",
+            Game cG = gameVM.CurrentGame;
+            if (sU.stats == null)
+            {
+                Statistics newStat = new Statistics();
+                newStat.Category = cG.CurrentCategory.Substring(0, cG.CurrentCategory.Length - 3);
+                if (state == "lost")
+                    newStat.NrLost++;
+                else
+                    newStat.NrWon++;
+                newStat.NrTotal = newStat.NrWon + newStat.NrLost;
+                ObservableCollection<Statistics> sts = new ObservableCollection<Statistics>();
+                sts.Add(newStat);
+                sU.stats = sts;
+            }
+            else
+            {
+                bool found = false;
+                foreach (Statistics stats in sU.stats.ToList())
+                {
+                    if (stats.Category == cG.CurrentCategory.Substring(0, cG.CurrentCategory.Length - 3))
+                    {
+                        found = true;
+                        if (state == "lost")
+                            stats.NrLost++;
+                        else
+                            stats.NrWon++;
+                        stats.NrTotal = stats.NrWon + stats.NrLost;
+                    }
+                }
+                if(found == false)
+                {
+                    Statistics newStat = new Statistics();
+                    newStat.Category = cG.CurrentCategory.Substring(0, cG.CurrentCategory.Length - 3);
+                    if (state == "lost")
+                        newStat.NrLost++;
+                    else
+                        newStat.NrWon++;
+                    newStat.NrTotal = newStat.NrWon + newStat.NrLost;
+                    sU.stats.Add(newStat);
+                }
+            }
+        }
+        private void StopTimer()
+        {
+            gameVM.CurrentGame.timer.Stop();
+            gameVM.CurrentGame.timer.IsEnabled = false;
+            gameVM.CurrentGame.delay = 45;
+        }
+        private void SavedMessage()
+        {
+            StopTimer();
+            MessageBoxResult result = MessageBox.Show("You saved the game! \n Would you like to exit now?",
                                         "Confirmation",
                                         MessageBoxButton.YesNo,
                                         MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
             {
-                ResetAll();
-            }
-            else
-            {
                 foreach (Window item in Application.Current.Windows)
                 {
                     if (item.DataContext == gameVM) item.Close();
                 }
             }
+            else
+            {
+                ResetAll();
+            }
         }
-        private void WinMessage()
+        private void ConfirmationMessage(string state)
         {
-            MessageBoxResult result = MessageBox.Show("You win :) \n Would you like to play again?",
-                                       "Confirmation",
-                                       MessageBoxButton.YesNo,
-                                       MessageBoxImage.Question);
-            if (result == MessageBoxResult.Yes)
+            string winMessage = "You win :) \n Would you like to play again?";
+            string lostMessage = "You lost :( \n Would you like to retry?";
+            string stateMessage = "";
+            switch (state)
             {
-                ResetAll();
+                case "win":
+                    stateMessage = winMessage;
+                    break;    
+                case "lost":
+                    stateMessage = lostMessage;
+                    break;
+                case "save":
+                    SavedMessage();
+                    break;
+                default:
+                    break;
             }
-            else
+
+            if(state == "win" || state == "lost")
             {
-                foreach (Window item in Application.Current.Windows)
+                StopTimer();
+                StatsGameCount(gameVM.SelectedUser, state);
+                MessageBoxResult result = MessageBox.Show($"{stateMessage}",
+                                            "Confirmation",
+                                            MessageBoxButton.YesNo,
+                                            MessageBoxImage.Question);
+                if (result == MessageBoxResult.Yes)
                 {
-                    if (item.DataContext == gameVM) item.Close();
+                    ResetAll();
+                }
+                else
+                {
+                    foreach (Window item in Application.Current.Windows)
+                    {
+                        if (item.DataContext == gameVM) item.Close();
+                    }
                 }
             }
         }
-
         private void UnmaskWord(string content)
         {
             Game cG = gameVM.CurrentGame;
+            User sU = gameVM.SelectedUser;
             string matchString = Regex.Escape(content);
 
             var _match = Regex.Match(cG.wordToGuess, matchString, RegexOptions.IgnoreCase);
@@ -214,8 +289,7 @@ namespace Hangman.Services
                 }
                 if (cG.numberOfX == 6)
                 {
-                    cG.timer.Stop();
-                    LostMessage();
+                    ConfirmationMessage("lost");
                 }
             }
             else
@@ -237,8 +311,8 @@ namespace Hangman.Services
                     }
                     else
                     {
-                        cG.timer.Stop();
-                        WinMessage();
+                        ConfirmationMessage("win");
+                        //WinMessage();
                     }
                 }
             }
@@ -255,17 +329,50 @@ namespace Hangman.Services
                 cG.wordToGuess = wordCopy;
             }
         }
+        private void RandomWordSelect(string category,Game cG)
+        {
+            if (cG.lastLvl == cG.levelContor && cG.secondsRemaining!=0)
+            {
+                UncheckAll();
+                ConfirmationMessage("lost");
+            }
+            else
+                cG.lastLvl = cG.levelContor;
+            cG.CurrentCategory = category;
 
+            if (category != "All categories")
+            {
+                string matchString = $"../../Categories/{category.Replace(" ", string.Empty).ToLower()}.txt";
+                int index = cG.categories.FindIndex(x => x == matchString);
+                var lines = File.ReadAllLines(cG.categories[index]);
+                var randomNr = RandomNumber(0, lines.Length - 1);
+                cG.wordToGuess = lines[randomNr];
+                MaskWord(cG);
+            }
+            else
+            {
+                int randomFolder = RandomNumber(0, cG.categories.Count() - 1);
+                var lines = File.ReadAllLines(cG.categories[randomFolder]);
+                var randomNr = RandomNumber(0, lines.Length - 1);
+                cG.wordToGuess = lines[randomNr];
+                MaskWord(cG);
+            }
+        }
         public void ChoseRandomWord(string category, Game cG)
         {
             switch (category)
             {
+                case "All categories":
+                    RandomWordSelect(category, cG);
+                    break;
                 case "Cars":
-                    cG.CurrentCategory = category;
-                    var lines = File.ReadAllLines(cG.categories[0]);
-                    var randomNr = RandomNumber(0, lines.Length - 1);
-                    cG.wordToGuess = lines[randomNr];
-                    MaskWord(cG);
+                    RandomWordSelect(category, cG);
+                    break;
+                case "Dog Breeds":
+                    RandomWordSelect(category, cG);
+                    break;
+                case "Cities":
+                    RandomWordSelect(category, cG);
                     break;
                 default:
                     break;

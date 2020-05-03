@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<User xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <contor>5</contor>
+  <Nickname>misulica123</Nickname>
+  <ImageSource>../Avatars/5.jpg</ImageSource>
+  <stats>
+    <Statistics>
+      <Category>Dog Breeds</Category>
+      <NrWon>0</NrWon>
+      <NrLost>1</NrLost>
+      <NrTotal>1</NrTotal>
+    </Statistics>
+    <Statistics>
+      <Category>Cars</Category>
+      <NrWon>0</NrWon>
+      <NrLost>1</NrLost>
+      <NrTotal>1</NrTotal>
+    </Statistics>
+  </stats>
+</User>

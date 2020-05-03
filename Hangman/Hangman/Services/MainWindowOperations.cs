@@ -4,6 +4,7 @@ using Hangman.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,12 +20,7 @@ namespace Hangman.Services
         {
             this.mainWindowVM = mainWindowVM;
         }
-        public void Exit(object param)
-        {
-            Window thisWindow = param as Window;
-            actions.SerializeObject("users.xml", mainWindowVM);
-            thisWindow.Close();
-        }
+
         public void AddUsers(string newTxt, ObservableCollection<User> usersList)
         {
             User user = new User();
@@ -35,16 +31,14 @@ namespace Hangman.Services
         public void DeleteUser(object param)
         {
             ObservableCollection<User> uL = param as ObservableCollection<User>;
+            File.Delete($"{mainWindowVM.SelectedUser.Nickname}Saved.xml");
+            File.Delete($"{mainWindowVM.SelectedUser.Nickname}Stats.xml");
             uL.Remove(mainWindowVM.SelectedUser);
         }
         public void StartGame(object param)
         {
-            //MainWindow wind = new MainWindow();
-            //wind.DataContext = GameWindow
-            //ObservableCollection<User> uL = param as ObservableCollection<User>;
-            //uL.Remove(mainWindowVM.SelectedUser);
-            GameWindow view = new GameWindow(mainWindowVM.SelectedUser);
-            view.Show();
+            mainWindowVM.SelectedUser = null;
+            mainWindowVM.ImagePath = null;
         }
         public string SetImageUpPath(User user)
         {

@@ -18,10 +18,8 @@ namespace Hangman.ViewModels
     public class GameWindowVM : BaseVM
     {
         private GameWIndowOperations operation;
-
         [XmlIgnore]
         public Dictionary<string, bool> alphabet = new Dictionary<string, bool>();
-
         [XmlArray]
         public Letter[] Alphabet
         {
@@ -31,11 +29,11 @@ namespace Hangman.ViewModels
             }
             set
             {
-                alphabet =  value.ToDictionary(i => i.key, i => i.value);
+                alphabet = value.ToDictionary(i => i.key, i => i.value);
             }
         }
 
-        public GameWindowVM() 
+        public GameWindowVM()
         {
             if (operation == null)
             {
@@ -53,34 +51,8 @@ namespace Hangman.ViewModels
             }
         }
 
-
-        private User selectedUser;
-        public User SelectedUser
-        {
-            get { return selectedUser; }
-            set
-            {
-                selectedUser = value;
-                OnPropertyChanged("SelectedUser");
-            }
-        }
-
-
-        private Game currentGame;
-        public Game CurrentGame
-        {
-            get { return currentGame; }
-            set
-            {
-                currentGame = value;
-                if (currentGame.secondsRemaining != 0)
-                {
-                    operation.StartTimer();
-                }
-                OnPropertyChanged("CurrentGame");
-            }
-        }
-
+        #region ICommands
+        public bool wasStartPressed = false;
         private ICommand startGameCommand;
         public ICommand StartGameCommand
         {
@@ -90,31 +62,71 @@ namespace Hangman.ViewModels
                 {
                     startGameCommand = new RelayCommand(param =>
                     {
-                        operation.StartGame(CurrentGame); IsStartTextVisible = false;
-                        IsNewGameVisible = true;
-                        operation.StartTimer();
+                        operation.StartGame(CurrentGame);
+                        if (wasStartPressed == false)
+                        {
+                            IsStartTextVisible = false;
+                            IsSaveEnabled = true;
+                            IsNewGameVisible = true;
+                            operation.StartTimer();
+                        }
+                        else
+                            IsSaveEnabled = false;
                     });
                 }
                 return startGameCommand;
             }
         }
-
-        public ICommand CheckCategoryCommand { get { return new RelayCommand(param => { operation.UncheckAll(); IsAllChecked = true; }); } }
+        public ICommand CheckCategoryCommand
+        {
+            get
+            {
+                return new RelayCommand(param =>
+                {
+                    operation.ChoseRandomWord("All categories", currentGame);
+                    operation.UncheckAll();
+                    IsAllChecked = true;
+                });
+            }
+        }
         public ICommand CheckCarsCommand
         {
             get
             {
                 return new RelayCommand(param =>
                 {
-                    operation.UncheckAll(); IsCarsChecked = true;
                     operation.ChoseRandomWord("Cars", currentGame);
+                    operation.UncheckAll();
+                    IsCarsChecked = true;
                 });
             }
         }
-
+        public ICommand CheckDogBreeds
+        {
+            get
+            {
+                return new RelayCommand(param =>
+                {
+                    operation.ChoseRandomWord("Dog Breeds", currentGame);
+                    operation.UncheckAll();
+                    IsDogBreedsChecked = true;
+                });
+            }
+        }
+        public ICommand CheckCities
+        {
+            get
+            {
+                return new RelayCommand(param =>
+                {
+                    operation.ChoseRandomWord("Cities", currentGame);
+                    operation.UncheckAll();
+                    IsCitiesChecked = true;
+                });
+            }
+        }
         public ICommand OpenClick { get { return new RelayCommand(param => IsOpenEnabled = false); } }
-        public ICommand ButtonClicked {get { return new RelayCommand(operation.ClickedButton, param => alphabet[operation.BtnCont(param)]); } }
-
+        public ICommand ButtonClicked { get { return new RelayCommand(operation.ClickedButton, param => alphabet[operation.BtnCont(param)]); } }
         public ICommand SaveCommand
         {
             get
@@ -125,6 +137,7 @@ namespace Hangman.ViewModels
                 });
             }
         }
+        #endregion
 
         #region WrongClicks
         private string wrongClick1;
@@ -189,6 +202,7 @@ namespace Hangman.ViewModels
         }
         #endregion
 
+        #region Properties
         private bool isAllChecked;
         public bool IsAllChecked
         {
@@ -196,6 +210,11 @@ namespace Hangman.ViewModels
             set
             {
                 isAllChecked = value;
+                if (value == true)
+                {
+                    IsNewGameEnabled = true;
+                    wasStartPressed = false;
+                }
                 OnPropertyChanged("IsAllChecked");
             }
         }
@@ -211,14 +230,72 @@ namespace Hangman.ViewModels
             }
         }
 
-        private bool isCarsChecked;
+        private bool isNewGameEnabled = false;
+        public bool IsNewGameEnabled
+        {
+            get { return isNewGameEnabled; }
+            set
+            {
+                isNewGameEnabled = value;
+                OnPropertyChanged("IsNewGameEnabled");
+            }
+        }
+        public bool isSaveEnabled = false;
+        public bool IsSaveEnabled
+        {
+            get { return isSaveEnabled; }
+            set
+            {
+                isSaveEnabled = value;
+                OnPropertyChanged("IsSaveEnabled");
+            }
+        }
+
+        private bool isCarsChecked = false;
         public bool IsCarsChecked
         {
             get { return isCarsChecked; }
             set
             {
                 isCarsChecked = value;
+                if (value == true)
+                {
+                    IsNewGameEnabled = true;
+                    wasStartPressed = false;
+                }
                 OnPropertyChanged("IsCarsChecked");
+            }
+        }
+
+        private bool isCitiesChecked = false;
+        public bool IsCitiesChecked
+        {
+            get { return isCitiesChecked; }
+            set
+            {
+                isCitiesChecked = value;
+                if (value == true)
+                {
+                    IsNewGameEnabled = true;
+                    wasStartPressed = false;
+                }
+                OnPropertyChanged("IsCitiesChecked");
+            }
+        }
+
+        private bool isDogBreedsChecked = false;
+        public bool IsDogBreedsChecked
+        {
+            get { return isDogBreedsChecked; }
+            set
+            {
+                isDogBreedsChecked = value;
+                if (value == true)
+                {
+                    IsNewGameEnabled = true;
+                    wasStartPressed = false;
+                }
+                OnPropertyChanged("IsDogBreedsChecked");
             }
         }
 
@@ -232,6 +309,7 @@ namespace Hangman.ViewModels
                 OnPropertyChanged("IsNewGameVisible");
             }
         }
+
         private bool startTextVisible = true;
         public bool IsStartTextVisible
         {
@@ -242,5 +320,32 @@ namespace Hangman.ViewModels
                 OnPropertyChanged("IsStartTextVisible");
             }
         }
+
+        private User selectedUser;
+        public User SelectedUser
+        {
+            get { return selectedUser; }
+            set
+            {
+                selectedUser = value;
+                OnPropertyChanged("SelectedUser");
+            }
+        }
+
+        private Game currentGame;
+        public Game CurrentGame
+        {
+            get { return currentGame; }
+            set
+            {
+                currentGame = value;
+                if (currentGame.secondsRemaining != 0)
+                {
+                    operation.StartTimer();
+                }
+                OnPropertyChanged("CurrentGame");
+            }
+        }
+        #endregion
     }
 }

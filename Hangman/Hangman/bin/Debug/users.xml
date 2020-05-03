@@ -5,14 +5,23 @@
       <contor>13</contor>
       <Nickname>andreixx2xd</Nickname>
       <ImageSource>../Avatars/13.jpg</ImageSource>
+      <stats />
     </User>
     <User>
       <contor>5</contor>
       <Nickname>misulica123</Nickname>
       <ImageSource>../Avatars/5.jpg</ImageSource>
+      <stats>
+        <Statistics>
+          <Category>Dog Breeds</Category>
+          <NrWon>0</NrWon>
+          <NrLost>1</NrLost>
+          <NrTotal>1</NrTotal>
+        </Statistics>
+      </stats>
     </User>
   </UsersList>
-  <CanExecuteCommand>false</CanExecuteCommand>
   <IsUserSelected>false</IsUserSelected>
   <IsEnterVisible>false</IsEnterVisible>
+  <CanExecuteCommand>false</CanExecuteCommand>
 </MainWindowViewModel>

@@ -3,24 +3,24 @@
   <wasStartPressed>false</wasStartPressed>
   <isSaveEnabled>true</isSaveEnabled>
   <Alphabet>
-    <Letter key="A" value="false" />
+    <Letter key="A" value="true" />
     <Letter key="B" value="false" />
-    <Letter key="C" value="true" />
-    <Letter key="D" value="true" />
-    <Letter key="E" value="false" />
+    <Letter key="C" value="false" />
+    <Letter key="D" value="false" />
+    <Letter key="E" value="true" />
     <Letter key="F" value="true" />
     <Letter key="G" value="true" />
     <Letter key="H" value="true" />
     <Letter key="I" value="true" />
     <Letter key="J" value="true" />
-    <Letter key="K" value="true" />
+    <Letter key="K" value="false" />
     <Letter key="L" value="true" />
     <Letter key="M" value="true" />
     <Letter key="N" value="true" />
     <Letter key="O" value="true" />
     <Letter key="P" value="true" />
     <Letter key="Q" value="true" />
-    <Letter key="R" value="true" />
+    <Letter key="R" value="false" />
     <Letter key="S" value="true" />
     <Letter key="T" value="true" />
     <Letter key="U" value="true" />
@@ -30,16 +30,31 @@
     <Letter key="Y" value="true" />
     <Letter key="Z" value="true" />
   </Alphabet>
+  <WrongClick1>X</WrongClick1>
+  <WrongClick2>X</WrongClick2>
+  <WrongClick3>X</WrongClick3>
+  <WrongClick4>X</WrongClick4>
+  <WrongClick5 />
+  <WrongClick6 />
+  <IsAllChecked>false</IsAllChecked>
+  <IsOpenEnabled>true</IsOpenEnabled>
+  <IsNewGameEnabled>true</IsNewGameEnabled>
+  <IsSaveEnabled>true</IsSaveEnabled>
+  <IsCarsChecked>true</IsCarsChecked>
+  <IsCitiesChecked>false</IsCitiesChecked>
+  <IsDogBreedsChecked>false</IsDogBreedsChecked>
+  <IsNewGameVisible>true</IsNewGameVisible>
+  <IsStartTextVisible>false</IsStartTextVisible>
   <SelectedUser>
-    <contor>13</contor>
-    <Nickname>andreixx2xd</Nickname>
-    <ImageSource>../Avatars/13.jpg</ImageSource>
+    <contor>5</contor>
+    <Nickname>misulica123</Nickname>
+    <ImageSource>../Avatars/5.jpg</ImageSource>
     <stats>
       <Statistics>
-        <Category>Cars : </Category>
-        <NrWon>1</NrWon>
-        <NrLost>6</NrLost>
-        <NrTotal>7</NrTotal>
+        <Category>Dog Breeds</Category>
+        <NrWon>0</NrWon>
+        <NrLost>1</NrLost>
+        <NrTotal>1</NrTotal>
       </Statistics>
     </stats>
   </SelectedUser>
@@ -47,32 +62,23 @@
     <categories>
       <string>../../Categories/cars.txt</string>
       <string>../../Categories/dogbreeds.txt</string>
+      <string>../../Categories/cities.txt</string>
     </categories>
     <levelContor>1</levelContor>
     <lastLvl>1</lastLvl>
-    <numberOfX>2</numberOfX>
-    <wordToGuess>Spyker</wordToGuess>
+    <numberOfX>4</numberOfX>
+    <wordToGuess>Honda</wordToGuess>
     <secondsRemaining>40</secondsRemaining>
     <timer>
       <IsEnabled>true</IsEnabled>
       <Interval />
     </timer>
     <delay>40</delay>
-    <deadline>2020-05-03T19:11:08.9031379+03:00</deadline>
-    <CurrentImage>../HangmanFrames/3.jpg</CurrentImage>
+    <deadline>2020-05-03T22:50:59.5043236+03:00</deadline>
+    <CurrentImage>../HangmanFrames/5.jpg</CurrentImage>
     <CurrentCategory>Cars : </CurrentCategory>
     <SecondsRemainingStr>40</SecondsRemainingStr>
-    <MaskedWord>_ _ _ _ E _ </MaskedWord>
+    <MaskedWord>_ _ _ D _ </MaskedWord>
     <CurrentLevel>Level 1</CurrentLevel>
   </CurrentGame>
-  <WrongClick1>X</WrongClick1>
-  <WrongClick2>X</WrongClick2>
-  <IsAllChecked>false</IsAllChecked>
-  <IsOpenEnabled>true</IsOpenEnabled>
-  <IsNewGameEnabled>true</IsNewGameEnabled>
-  <IsSaveEnabled>true</IsSaveEnabled>
-  <IsCarsChecked>true</IsCarsChecked>
-  <IsDogBreedsChecked>false</IsDogBreedsChecked>
-  <IsNewGameVisible>true</IsNewGameVisible>
-  <IsStartTextVisible>false</IsStartTextVisible>
 </GameWindowVM>

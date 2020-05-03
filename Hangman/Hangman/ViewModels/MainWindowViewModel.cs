@@ -29,37 +29,7 @@ namespace Hangman.ViewModels
             }
         }
 
-        private bool canExecuteCommand = true;
-        public bool CanExecuteCommand
-        {
-            get
-            {
-                return canExecuteCommand;
-            }
-
-            set
-            {
-                if (canExecuteCommand == value)
-                {
-                    return;
-                }
-                canExecuteCommand = value;
-            }
-        }
-
-        private ICommand exitCommand;
-        public ICommand ExitCommand
-        {
-            get
-            {
-                if (exitCommand == null)
-                {
-                    exitCommand = new RelayCommand(param => { SelectedUser = null; ImagePath = null; IsEnterVisible = false; operation.Exit(param); });
-                }
-                return exitCommand;
-            }
-        }
-
+        #region ICommands
         private ICommand newUserCommand;
         public ICommand NewUserCommand
         {
@@ -138,7 +108,9 @@ namespace Hangman.ViewModels
                 return setImageDownCommand;
             }
         }
+        #endregion
 
+        #region Properties
         private string imagePath;
         public string ImagePath
         {
@@ -210,7 +182,6 @@ namespace Hangman.ViewModels
             }
         }
 
-
         private bool enterPannel;
         public bool IsEnterVisible
         {
@@ -219,6 +190,25 @@ namespace Hangman.ViewModels
             {
                 enterPannel = value;
                 OnPropertyChanged("IsEnterVisible");
+            }
+        }
+        private bool canExecuteCommand = true;
+        #endregion
+
+        public bool CanExecuteCommand
+        {
+            get
+            {
+                return canExecuteCommand;
+            }
+
+            set
+            {
+                if (canExecuteCommand == value)
+                {
+                    return;
+                }
+                canExecuteCommand = value;
             }
         }
     }

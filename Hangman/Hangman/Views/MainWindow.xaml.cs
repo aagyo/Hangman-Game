@@ -1,8 +1,10 @@
 ﻿using Hangman.Models;
 using Hangman.ViewModels;
+using Hangman.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,6 +30,25 @@ namespace Hangman
         {
             InitializeComponent();
             DataContext = actions.DeserializeObject("users.xml");
+        }
+
+        public void OnWindowClosing(object sender, CancelEventArgs e)
+        {
+            MainWindowViewModel mwv = DataContext as MainWindowViewModel;
+            mwv.SelectedUser = null;
+            mwv.IsEnterVisible = false;
+            actions.SerializeObject("users.xml", DataContext as MainWindowViewModel);
+        }
+
+        private void playBtn_Click(object sender, RoutedEventArgs e)
+        {
+            GameWindow view = new GameWindow((DataContext as MainWindowViewModel).SelectedUser);
+            view.Show();
+        }
+
+        private void exitBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }
